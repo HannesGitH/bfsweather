@@ -2,7 +2,7 @@
 
 ## Instructions
 
-generate code with `flutter run build_runner build` and then run or build e.g. using `flutter run`
+generate code with `flutter run build_runner build` (or continuously using `watch` ) and then run or build e.g. using `flutter run`
 
 ## Annotations
 

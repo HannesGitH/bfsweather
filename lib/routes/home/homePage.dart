@@ -10,14 +10,14 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Page'),
+        title: const Text("BFS Weather"),
       ),
       body: ref.watch(weatherLocationServiceProvider).when(
             loading: () => const CircularProgressIndicator(),
             error: (error, stack) => Text('Error: $error'),
             data: (state) => switch (state.favorites) {
               [] => const Text(
-                  'No favorites, and adding them is not supported currently, lol'),
+                  "No favorites, and adding them is not supported currently, lol"),
               final list => ListView(
                   children: list
                       .map((location) => WeatherPreview(location: location))

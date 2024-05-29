@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class OpenweatherGeocoding {
   static const directQueryUrl =
-      'http://api.openweathermap.org/geo/1.0/direct?q=';
+      'https://api.openweathermap.org/geo/1.0/direct?q=';
   final limit = 10;
 
   final _apiKey = dotenv.env['OPENWEATHER_API_KEY'];

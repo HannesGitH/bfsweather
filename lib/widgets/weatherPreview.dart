@@ -3,13 +3,14 @@ import 'package:bfsweather/data/weather/weatherData.dart';
 import 'package:flutter/material.dart';
 
 class WeatherPreview extends StatelessWidget {
-  const WeatherPreview({super.key, required this.location, this.weather});
+  const WeatherPreview({super.key, required this.location});
 
   final LocationData location;
-  final WeatherData? weather;
 
   @override
   Widget build(BuildContext context) {
-    return Text("Weather Preview");
+    return Card(
+      child: Text("cool"),
+    );
   }
 }

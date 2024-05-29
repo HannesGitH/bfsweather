@@ -1,0 +1,7 @@
+{
+	"name": "Dart",
+	"program": "lib/main.dart",
+	"request": "launch",
+	"type": "dart",
+	"preLaunchTask": "pub: build_runner watch"
+}
