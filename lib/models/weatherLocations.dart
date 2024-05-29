@@ -34,7 +34,7 @@ class WeatherLocationService extends _$WeatherLocationService {
         final prevFavorites = [...prevState.favorites];
         prevFavorites.remove(location);
         prevFavorites.add(location.copyWith(weather: weather));
-        state = AsyncData(prevState.copyWith(favorites: favorites));
+        state = AsyncData(prevState.copyWith(favorites: prevFavorites));
       });
     }
 

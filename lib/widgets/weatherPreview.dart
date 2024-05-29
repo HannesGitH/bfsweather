@@ -10,7 +10,12 @@ class WeatherPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Text("cool"),
+      child: Column(
+        children: [
+          Text(location.name),
+          Text(location.weather?.current.description.main ?? 'loading..'),
+        ],
+      ),
     );
   }
 }
