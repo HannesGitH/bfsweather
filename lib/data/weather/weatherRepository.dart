@@ -6,8 +6,8 @@ import 'sources/openweather.dart';
 class WeatherRepository {
   final openweatherSource = Openweather();
 
-  Future<WholeWeatherData> getFor({required LocationData location}) async {
+  Stream<WholeWeatherData> getFor({required LocationData location}) async* {
     //TODO: Implement offline
-    return await openweatherSource.queryFor(location: location);
+    yield await openweatherSource.queryFor(location: location);
   }
 }
