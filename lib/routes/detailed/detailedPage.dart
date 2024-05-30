@@ -12,6 +12,11 @@ class DetailedPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(location.name ?? 'Unknown Location'),
+      ),
+      body: Container(),
+    );
   }
 }

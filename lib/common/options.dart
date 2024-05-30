@@ -12,9 +12,28 @@ enum Unit {
   imperial,
 }
 
-extension UnitExtension on Unit {
+extension UnitNameExtension on Unit {
   String get openweatherName => switch (this) {
         Unit.metric => 'metric',
         Unit.imperial => 'imperial',
+      };
+}
+
+extension UnitSymbolExtension on Unit {
+  String get tempSymbol => switch (this) {
+        Unit.metric => '°C',
+        Unit.imperial => '°F',
+      };
+}
+
+extension UnitMinMaxExtension on Unit {
+  double get tempMin => switch (this) {
+        Unit.metric => -15.0,
+        Unit.imperial => 5.0,
+      };
+
+  double get tempMax => switch (this) {
+        Unit.metric => 50.0,
+        Unit.imperial => 120.0,
       };
 }

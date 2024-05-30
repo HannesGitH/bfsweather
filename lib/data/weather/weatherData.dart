@@ -75,6 +75,9 @@ class WeatherDescription with _$WeatherDescription {
   ImageProvider get iconProvider =>
       AssetImage('assets/icons/weather/$iconId.png');
 
+  ImageProvider get iconProviderHD => AssetImage(
+      'assets/icons/weather/4.0x/$iconId.png'); //this is not how variants should be used, ideally we also have a HD image to use for larger layouts
+
   factory WeatherDescription.fromJson(Map<String, dynamic> json) =>
       _$WeatherDescriptionFromJson(json);
 }
@@ -96,8 +99,14 @@ class WeatherDailyTemps with _$WeatherDailyTemps {
 
 @freezed
 class WeatherTempUnion with _$WeatherTempUnion {
+  const WeatherTempUnion._();
   const factory WeatherTempUnion.daily(WeatherDailyTemps daily) = _Daily;
   const factory WeatherTempUnion.instant(num instant) = _Instant;
+
+  get temp => when(
+        daily: (daily) => daily.day,
+        instant: (instant) => instant,
+      );
 
   factory WeatherTempUnion.fromJson(dynamic json) => json is num
       ? WeatherTempUnion.instant(json)
@@ -120,9 +129,15 @@ class WeatherDailyFeltTemps with _$WeatherDailyFeltTemps {
 
 @freezed
 class WeatherTempFeltUnion with _$WeatherTempFeltUnion {
+  const WeatherTempFeltUnion._();
   const factory WeatherTempFeltUnion.dailyf(WeatherDailyFeltTemps daily) =
       _Dailyf;
   const factory WeatherTempFeltUnion.instantf(num instant) = _Instantf;
+
+  get temp => when(
+        dailyf: (daily) => daily.day,
+        instantf: (instant) => instant,
+      );
 
   factory WeatherTempFeltUnion.fromJson(dynamic json) => json is num
       ? WeatherTempFeltUnion.instantf(json)

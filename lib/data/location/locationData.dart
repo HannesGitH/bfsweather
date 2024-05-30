@@ -11,16 +11,29 @@ const lngKey = 'lon';
 
 @freezed
 class LocationData with _$LocationData {
+  const LocationData._();
+
   const factory LocationData({
-    required String name,
+    String? name,
     @JsonKey(name: latKey) required num lat,
     @JsonKey(name: lngKey) required num lng,
+    @JsonKey(includeFromJson: false) @Default(false) bool isLoading,
     // @JsonKey(fromJson: WholeWeatherData.fromJson, toJson: WholeWeatherData.toJson)
     WholeWeatherData? weather,
   }) = _LocationData;
 
+  isSameAs(Object other) {
+    if (other is LocationData) {
+      return other.lat == lat && other.lng == lng;
+    }
+    return false;
+  }
+
+  toQueryStr() => '$latKey=$lat&$lngKey=$lng';
+
   factory LocationData.fromQueryParams(Map<String, dynamic> dict) =>
-      LocationData.fromJson(dict);
+      LocationData(
+          lat: double.parse(dict[latKey]), lng: double.parse(dict[lngKey]));
 
   factory LocationData.fromJson(Map<String, dynamic> json) =>
       _$LocationDataFromJson(json);

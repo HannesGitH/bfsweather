@@ -19,6 +19,18 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
       routerConfig: ref.watch(routerProvider),
+      theme: ThemeData(
+        // i have not tuned the light theme that why we default to dark
+        colorSchemeSeed: Colors.orange.shade800,
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData(
+        // colorSchemeSeed: Colors.orange.shade800,
+        colorSchemeSeed: Colors.purple,
+        brightness: Brightness.dark,
+        useMaterial3: true,
+      ),
+      themeMode: ThemeMode.dark,
     );
   }
 }

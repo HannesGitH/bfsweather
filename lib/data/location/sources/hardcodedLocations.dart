@@ -17,14 +17,21 @@ class HardcodedLocations {
     lng: 9.9936819,
   );
 
-  final locations = [dortmund, berlin, hamburg];
+  static const marrakesh = LocationData(
+    name: 'Marrakesh',
+    lat: 31.6294723,
+    lng: -7.9810845,
+  );
+
+  final locations = [dortmund, berlin, hamburg, marrakesh];
 
   LocationData? get(String name) => (locations as List<LocationData?>)
       .firstWhere((location) => location?.name == name, orElse: () => null);
 
   List<LocationData> search(String name) {
     return locations
-        .where((location) => location.name.toLowerCase().contains(name))
+        .where(
+            (location) => location.name?.toLowerCase().contains(name) ?? false)
         .toList();
   }
 }
