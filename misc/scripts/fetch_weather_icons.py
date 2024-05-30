@@ -3,7 +3,7 @@ import os
 
 load_to_directory = "assets/icons/weather"
 
-base_url = "http://openweathermap.org/img/w"
+base_url = "http://openweathermap.org/img/wn"
 
 name_prefixes = ["01", "02", "03", "04", "09", "10", "11", "13", "50"]
 name_suffixes = ["d", "n"]
