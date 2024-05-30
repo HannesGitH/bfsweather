@@ -2,6 +2,7 @@ import 'package:bfsweather/common/extensions/extensions.dart';
 import 'package:bfsweather/data/location/locationData.dart';
 import 'package:bfsweather/data/weather/weatherData.dart';
 import 'package:bfsweather/widgets/components/weather/humidity.dart';
+import 'package:bfsweather/widgets/components/weather/rain.dart';
 import 'package:bfsweather/widgets/components/weather/temperature.dart';
 import 'package:bfsweather/widgets/components/weather/wind.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,59 +29,95 @@ class WeatherPreview extends StatelessWidget {
           //     .nnThen((x) => temperatureColor(x.current.temp.temp)),
         ),
         onPressed: onPressed,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
           children: [
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  flex: 3,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        location.name ?? '${location.lat}, ${location.lng}',
-                        style: Theme.of(context).textTheme.headlineSmall,
+                      Row(
+                        children: [
+                          title(context),
+                          if (location.isLoading) loader(),
+                        ],
                       ),
-                      if (location.isLoading)
-                        Expanded(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Opacity(
-                              opacity: 0.2,
-                              child: SizedBox(
-                                height: 10,
-                                child: LinearProgressIndicator(
-                                  borderRadius: BorderRadius.circular(10),
-                                  backgroundColor: Colors.grey[800],
-                                ),
-                              ),
+                      ...switch (location.weather) {
+                        null => [
+                            const Text("No weather data available, loading..."),
+                          ], //[const CircularProgressIndicator()],
+                        final weather => [
+                            WeatherInstantPreview(
+                              weather.current,
+                              today: weather.daily.firstOrNull,
+                              omitIcon: true,
                             ),
-                          ),
-                        ),
+                          ],
+                      },
                     ],
                   ),
-                  ...switch (location.weather) {
-                    null => [], //[const CircularProgressIndicator()],
-                    final weather => [
-                        WeatherInstantPreview(
-                          weather.current,
-                          today: weather.daily.firstOrNull,
-                          omitIcon: true,
-                        ),
-                      ],
-                  },
-                ],
-              ),
+                ),
+                if (location.weather != null) ...[
+                  if (location.weather?.urgentRainForecast != null) ...[
+                    Flexible(
+                      flex: 1,
+                      fit: FlexFit.tight,
+                      child: SizedBox(
+                        height: 50,
+                        // width: 100,
+                        child: UrgentRainForecast(
+                            precipitationData:
+                                location.weather!.urgentRainForecast!.thin(4)),
+                      ),
+                    ),
+                  ],
+                  Image(
+                    image: location.weather!.current.description.iconProviderHD,
+                    height: 80,
+                    fit: BoxFit.cover,
+                  ),
+                ]
+              ],
             ),
             if (location.weather != null)
-              Image(
-                image: location.weather!.current.description.iconProviderHD,
-                height: 80,
-                fit: BoxFit.cover,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Card(
+                  margin: EdgeInsets.zero,
+                  elevation: 0,
+                  child: HourlyWeatherPreview(location.weather!.hourly),
+                ),
               ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Text title(BuildContext context) {
+    return Text(
+      location.name ?? '${location.lat}, ${location.lng}',
+      style: Theme.of(context).textTheme.headlineSmall,
+    );
+  }
+
+  Expanded loader() {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Opacity(
+          opacity: 0.2,
+          child: SizedBox(
+            height: 10,
+            child: LinearProgressIndicator(
+              borderRadius: BorderRadius.circular(10),
+              backgroundColor: Colors.grey[800],
+            ),
+          ),
         ),
       ),
     );
@@ -102,9 +139,7 @@ class WeatherInstantPreview extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          ((ts) =>
-                  "${ts.hour.toString().padLeft(2, '0')}:${ts.minute.toString().padLeft(2, '0')}")(
-              weather.timeStamp),
+          weather.timeStamp.toSmallHRString(),
           style: Theme.of(context).textTheme.labelSmall,
         ),
         Wrap(
@@ -143,7 +178,7 @@ class WeatherInstantPreview extends StatelessWidget {
             // // ),
           ]
               .map((e) => Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
+                    padding: const EdgeInsets.only(right: 15.0),
                     child: e,
                   ))
               .toList(),
@@ -154,26 +189,33 @@ class WeatherInstantPreview extends StatelessWidget {
 }
 
 class HourlyWeatherPreview extends StatelessWidget {
-  const HourlyWeatherPreview(this.weather, {super.key});
+  const HourlyWeatherPreview(this.foreCast, {super.key});
 
-  final WeatherInstantData weather;
+  final List<WeatherInstantData> foreCast;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Now", style: Theme.of(context).textTheme.labelMedium),
-        Row(
-          children: [
-            Image(
-              image: weather.description.iconProvider,
-            ),
-            Temperature(weather.temp.temp),
-            Text(weather.summary.toString())
-          ],
-        ),
-      ],
+    return SizedBox(
+      height: 120,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: foreCast
+            .map((e) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Temperature(e.temp.temp),
+                      Image(image: e.description.iconProvider),
+                      Text(
+                        e.timeStamp.toSmallHRString(),
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    ],
+                  ),
+                ))
+            .toList(),
+      ),
     );
   }
 }
