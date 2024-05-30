@@ -1,7 +1,9 @@
 import 'package:bfsweather/common/extensions/extensions.dart';
 import 'package:bfsweather/data/location/locationData.dart';
 import 'package:bfsweather/data/weather/weatherData.dart';
+import 'package:bfsweather/widgets/components/weather/humidity.dart';
 import 'package:bfsweather/widgets/components/weather/temperature.dart';
+import 'package:bfsweather/widgets/components/weather/wind.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -99,10 +101,17 @@ class WeatherInstantPreview extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        Text(
+          ((ts) =>
+                  "${ts.hour.toString().padLeft(2, '0')}:${ts.minute.toString().padLeft(2, '0')}")(
+              weather.timeStamp),
+          style: Theme.of(context).textTheme.labelSmall,
+        ),
+        Wrap(
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            if (dailyTemps != null) ...[
+            if (dailyTemps != null)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -112,34 +121,32 @@ class WeatherInstantPreview extends StatelessWidget {
                   Temperature(dailyTemps.min),
                 ],
               ),
-              const SizedBox(width: 10),
-            ],
             Temperature(
               weather.temp.temp,
               primary: true,
             ),
             if (!omitIcon) ...[
-              const SizedBox(width: 10),
               Image(image: weather.description.iconProvider),
             ],
-            const SizedBox(width: 10),
-            SizedBox(
-              height: 40,
-              width: 10,
-              child: RotatedBox(
-                quarterTurns: 3,
-                child: LinearProgressIndicator(
-                  value: weather.humidity / 100,
-                  borderRadius: BorderRadius.circular(10),
-                  valueColor: const AlwaysStoppedAnimation(Colors.blue),
-                ),
-              ),
-            )
+            HumiditySmall(humidity: weather.humidity),
             // if (today != null) ...[
             //   const SizedBox(width: 10),
             //   Text(today!.),
             // ],
-          ],
+            // // Theme(
+            // //     data: Theme.of(context).copyWith(
+            // //         iconTheme: Theme.of(context).iconTheme.copyWith(
+            // //               size: 10,
+            // //             )),
+            // //     child:
+            Wind(deg: weather.windDeg, speed: weather.windSpeed),
+            // // ),
+          ]
+              .map((e) => Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: e,
+                  ))
+              .toList(),
         ),
       ],
     );
