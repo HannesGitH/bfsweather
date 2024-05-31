@@ -30,6 +30,7 @@ class HomeModel extends _$HomeModel {
     if (!perms.allowed) {
       await Geolocator.requestPermission();
     }
+    refresh();
   }
 }
 
