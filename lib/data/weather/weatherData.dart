@@ -103,7 +103,7 @@ class WeatherTempUnion with _$WeatherTempUnion {
   const factory WeatherTempUnion.daily(WeatherDailyTemps daily) = _Daily;
   const factory WeatherTempUnion.instant(num instant) = _Instant;
 
-  get temp => when(
+  num get temp => when(
         daily: (daily) => daily.day,
         instant: (instant) => instant,
       );

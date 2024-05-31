@@ -12,7 +12,7 @@ class Temperature extends StatelessWidget {
   }) : assert(color == null || !autoColor,
             "Cannot provide both color and autoColor");
 
-  final double temperature;
+  final num temperature;
   final bool primary;
   final Color? color;
   final bool showUnit;
@@ -20,8 +20,8 @@ class Temperature extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        this.color ?? (autoColor ? temperatureColor(temperature) : null);
+    final color = this.color ??
+        (autoColor ? temperatureColor(temperature.toDouble()) : null);
     return RichText(
       text: TextSpan(
         text: temperature.toStringAsFixed(0),
