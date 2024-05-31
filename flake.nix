@@ -11,7 +11,6 @@
   outputs = { self, nixpkgs, nixpkgs-stable, flake-utils, ... }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        frontend-dir = ./frontend;
         pkg-opts = {
           inherit system;
           config = {
@@ -41,8 +40,7 @@
 
         # android = pkgs.androidenv.androidPkgs_9_0;
 
-        packages = rec {
-
+        packages = {
           avd = pkgs-stable.androidenv.emulateApp {
             name = "run-test-emulatorem";
             platformVersion = android-data.platformVersion;
@@ -51,37 +49,21 @@
             # deviceName = "test-emulator";
           };
 
-
-          apk = pkgs.stdenv.mkDerivation {
-            name = "apk";
-            buildInputs = with pkgs; deps ++ [ jdk17 android.androidsdk avd android-tools ];
-            src = frontend-dir;
-            ANDROID_SDK_ROOT = "${android.androidsdk}/libexec/android-sdk";
-              # cp ${fetchDeps}/.pub-cache $HOME/.pub-cache
-            configurePhase = ''
-              #export HOME=$(mktemp -d)
-              flutter pub get #--offline 
-              #yes | flutter doctor --android-licenses
-            '';
-            buildPhase = ''
-              # ls
-              # flutter doctor
-              flutter build apk
-            '';
-            installPhase = ''
-              mkdir -p $out
-              cp -r build/app/outputs/flutter-apk/app-release.apk $out/app-release.apk
-            '';
-            # TODO: install st that nix run .#apk opens avd
-             shellHook = ''
-                cd frontend
-                zsh
-                # code .
-                ${avd}/bin/run-test-emulator
-             '';
-          };
         };
 
         defaultPackage = packages.avd;
+
+        devShells = rec {
+          apk = pkgs.mkShell rec {
+            name = "apk";
+            buildInputs = with pkgs; deps ++ [ jdk17 android.androidsdk packages.avd android-tools flutter ];
+            ANDROID_SDK_ROOT = "${android.androidsdk}/libexec/android-sdk";
+            shellHook = ''
+              echo "hi"
+              export ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT}
+            '';
+          };
+          default = apk;
+        };
       });
 }

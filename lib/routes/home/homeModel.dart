@@ -1,7 +1,9 @@
 import 'package:bfsweather/data/location/locationData.dart';
+import 'package:bfsweather/data/location/sources/userPosition.dart';
 import 'package:bfsweather/models/weatherLocations.dart';
 import 'package:bfsweather/router.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'homeModel.freezed.dart';
@@ -21,6 +23,13 @@ class HomeModel extends _$HomeModel {
 
   Future refresh() async {
     await ref.read(weatherLocationServiceProvider.notifier).refreshFavorites();
+  }
+
+  activateMyLocation() async {
+    final perms = await Geolocator.checkPermission();
+    if (!perms.allowed) {
+      await Geolocator.requestPermission();
+    }
   }
 }
 

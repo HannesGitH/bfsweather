@@ -53,6 +53,10 @@ class HomePage extends ConsumerWidget {
                 ),
             },
           ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: homeModel.activateMyLocation,
+        child: const Icon(Icons.my_location_sharp),
+      ),
       drawer: const SettingsDrawer(),
     );
   }

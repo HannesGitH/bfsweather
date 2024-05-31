@@ -1,3 +1,5 @@
+import 'package:bfsweather/data/location/sources/userPosition.dart';
+
 import 'locationData.dart';
 import 'sources/openweatherGeocoding.dart';
 import 'sources/hardcodedLocations.dart';
@@ -5,6 +7,7 @@ import 'sources/hardcodedLocations.dart';
 class LocationRepository {
   final openweatherSource = OpenweatherGeocoding();
   final hardcodedSource = HardcodedLocations();
+  final userPositionSource = UserPositionSource();
 
   Future<LocationData> getLocationFromName(String name) async {
     //TODO: Implement offline
@@ -18,5 +21,11 @@ class LocationRepository {
     ];
   }
 
-  Future<List<LocationData>> getFavorites() async => hardcodedSource.locations;
+  Future<List<LocationData>> getFavorites() async {
+    final userLocation = await userPositionSource.getUserPosition();
+    return [
+      if (userLocation != null) userLocation,
+      ...hardcodedSource.locations
+    ];
+  }
 }
