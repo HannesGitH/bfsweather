@@ -3,6 +3,7 @@ import 'package:bfsweather/data/location/locationRepository.dart';
 import 'package:bfsweather/data/weather/weatherData.dart';
 import 'package:bfsweather/data/weather/weatherRepository.dart';
 import 'package:bfsweather/router.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -66,9 +67,12 @@ class WeatherLocationService extends _$WeatherLocationService {
   }
 
   Future refreshFavorites() async {
-    state = AsyncLoading();
-    state = AsyncData((await future)
-        .copyWith(favorites: await locationRepository.getFavorites()));
+    final oldState = await future;
+    state = const AsyncValue.loading();
+    final newState =
+        oldState.copyWith(favorites: await locationRepository.getFavorites());
+    state = AsyncValue.data(newState);
+    ref.notifyListeners();
     await _loadWeatherForFavorites();
   }
 }

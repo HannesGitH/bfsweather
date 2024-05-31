@@ -8,7 +8,9 @@ class UserPositionSource {
       return null;
     }
     final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low);
+      desiredAccuracy: LocationAccuracy.low,
+      timeLimit: Duration(seconds: 5),
+    );
     return LocationData(
       name: 'My Location',
       lat: position.latitude,

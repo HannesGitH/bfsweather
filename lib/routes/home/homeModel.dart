@@ -13,6 +13,9 @@ part 'homeModel.g.dart';
 class HomeModel extends _$HomeModel {
   @override
   HomeState build() {
+    _showUserPositionButton.then((value) => state = state.copyWith(
+          showUserPositionButton: value,
+        ));
     return const HomeState();
   }
 
@@ -32,9 +35,14 @@ class HomeModel extends _$HomeModel {
     }
     refresh();
   }
+
+  Future<bool> get _showUserPositionButton async =>
+      !(await Geolocator.checkPermission()).allowed;
 }
 
 @freezed
 class HomeState with _$HomeState {
-  const factory HomeState() = _HomeState;
+  const factory HomeState({
+    @Default(true) bool showUserPositionButton,
+  }) = _HomeState;
 }

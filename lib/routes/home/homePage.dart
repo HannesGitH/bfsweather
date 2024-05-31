@@ -26,7 +26,7 @@ class HomePage extends ConsumerWidget {
         ],
       ),
       body: ref.watch(weatherLocationServiceProvider).when(
-            loading: () => const CircularProgressIndicator(),
+            loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, stack) => Text('Error: $error'),
             data: (state) => switch (state.favorites) {
               [] => const Text(
@@ -53,10 +53,12 @@ class HomePage extends ConsumerWidget {
                 ),
             },
           ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: homeModel.activateMyLocation,
-        child: const Icon(Icons.my_location_sharp),
-      ),
+      floatingActionButton: homeState.showUserPositionButton
+          ? FloatingActionButton(
+              onPressed: homeModel.activateMyLocation,
+              child: const Icon(Icons.my_location_sharp),
+            )
+          : null,
       drawer: const SettingsDrawer(),
     );
   }
