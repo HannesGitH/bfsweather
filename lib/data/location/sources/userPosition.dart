@@ -1,7 +1,10 @@
 import 'package:bfsweather/data/location/locationData.dart';
+import 'package:bfsweather/data/location/sources/openweatherGeocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class UserPositionSource {
+  final openWGC = OpenweatherGeocoding();
+
   Future<LocationData?> getUserPosition() async {
     if (!await Geolocator.isLocationServiceEnabled() ||
         !(await Geolocator.checkPermission()).allowed) {
@@ -9,13 +12,13 @@ class UserPositionSource {
     }
     final position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.low,
-      timeLimit: Duration(seconds: 5),
+      timeLimit: const Duration(seconds: 5),
     );
-    return LocationData(
-      name: 'My Location',
+    return ((LocationData l) => l.copyWith(name: 'Your location: ${l.name}'))(
+        await openWGC.addName(LocationData(
       lat: position.latitude,
       lng: position.longitude,
-    );
+    )));
   }
 }
 
