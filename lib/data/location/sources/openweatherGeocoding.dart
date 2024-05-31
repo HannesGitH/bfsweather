@@ -42,6 +42,11 @@ class OpenweatherGeocoding {
       reverse(location.lat, location.lng)
           .then((locationData) => location.copyWith(name: locationData.name));
 
+  Future<LocationData> tryAddName(LocationData location) =>
+      reverse(location.lat, location.lng).then(
+          (locationData) => location.copyWith(name: locationData.name),
+          onError: (e) => location);
+
   Future<LocationData> reverse(num lat, num lng) {
     final url = '$reverseQueryUrl' 'lat=$lat&lon=$lng&limit=1&appid=$_apiKey';
     return _fetchLocationsFromURI(url)
