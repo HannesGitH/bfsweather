@@ -1,5 +1,5 @@
 import 'package:bfsweather/fragments/settingsDrawer.dart';
-import 'package:bfsweather/models/weatherLocations.dart';
+import 'package:bfsweather/models/weatherLocationService.dart';
 import 'package:bfsweather/routes/home/homeModel.dart';
 import 'package:bfsweather/widgets/weatherPreview.dart';
 import 'package:flutter/cupertino.dart';

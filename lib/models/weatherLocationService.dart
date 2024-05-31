@@ -6,8 +6,8 @@ import 'package:bfsweather/router.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'weatherLocations.freezed.dart';
-part 'weatherLocations.g.dart';
+part 'weatherLocationService.freezed.dart';
+part 'weatherLocationService.g.dart';
 
 @freezed
 class WeatherLocationState with _$WeatherLocationState {
@@ -65,5 +65,10 @@ class WeatherLocationService extends _$WeatherLocationService {
     state = AsyncData(prevState.copyWith(favorites: prevFavorites));
   }
 
-  Future refreshFavorites() => _loadWeatherForFavorites();
+  Future refreshFavorites() async {
+    state = AsyncLoading();
+    state = AsyncData((await future)
+        .copyWith(favorites: await locationRepository.getFavorites()));
+    await _loadWeatherForFavorites();
+  }
 }
