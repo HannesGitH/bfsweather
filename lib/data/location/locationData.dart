@@ -29,6 +29,12 @@ class LocationData with _$LocationData {
     return false;
   }
 
+  bool isNearEnoughToProbablyBeTheSame(LocationData other,
+      {double tolerance = 0.05}) {
+    return (lat - other.lat).abs() < tolerance &&
+        (lng - other.lng).abs() < tolerance;
+  }
+
   toQueryStr() => '$latKey=$lat&$lngKey=$lng';
 
   factory LocationData.fromQueryParams(Map<String, dynamic> dict) =>
