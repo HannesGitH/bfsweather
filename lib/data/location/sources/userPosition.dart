@@ -1,6 +1,7 @@
 import 'package:bfsweather/data/location/locationData.dart';
 import 'package:bfsweather/data/location/sources/locationCache.dart';
 import 'package:bfsweather/data/location/sources/openweatherGeocoding.dart';
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
 class UserPositionSource {
@@ -19,11 +20,13 @@ class UserPositionSource {
       timeLimit: const Duration(seconds: 5),
     );
 
-    final cached = _cache.get(
-      position.latitude.toString(),
-      position.longitude.toString(),
-      includeSimilar: true,
-    );
+    final cached = kIsWeb
+        ? null
+        : _cache.get(
+            position.latitude.toString(),
+            position.longitude.toString(),
+            includeSimilar: true,
+          );
 
     return cached ??
         ((LocationData l) => l.copyWith(

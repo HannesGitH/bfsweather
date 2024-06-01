@@ -37,21 +37,35 @@ class WeatherLocationService extends _$WeatherLocationService {
 
   selectLocation(LocationData location) async {
     state = AsyncData((await future).copyWith(currentLocation: location));
+    if (location.weather == null) {
+      await for (final newLocation in loadWeatherFor(location)) {
+        state =
+            AsyncData((await future).copyWith(currentLocation: newLocation));
+      }
+    }
+  }
+
+  deselect() async {
+    state = AsyncData((await future).copyWith(currentLocation: null));
   }
 
   _loadWeatherForFavorites() async {
     final favorites = (await future).favorites;
     for (final location in favorites) {
-      await _replaceLocation(location, location.copyWith(isLoading: true));
-      final weatherS = weatherRepository.getFor(location: location);
-      var newLocation = location;
-      await for (final (weather, weatherMeta) in weatherS) {
-        newLocation = newLocation.copyWith(
-            weather: weather, meta: LocationMetaData(weatherMeta: weatherMeta));
+      await for (final newLocation in loadWeatherFor(location)) {
         await _replaceLocation(location, newLocation);
       }
-      await _replaceLocation(location, newLocation.copyWith(isLoading: false));
     }
+  }
+
+  Stream<LocationData> loadWeatherFor(LocationData location) async* {
+    final weatherS = weatherRepository.getFor(location: location);
+    var newLocation = location.copyWith(isLoading: true);
+    await for (final (weather, weatherMeta) in weatherS) {
+      yield newLocation.copyWith(
+          weather: weather, meta: LocationMetaData(weatherMeta: weatherMeta));
+    }
+    yield newLocation.copyWith(isLoading: false);
   }
 
   _replaceLocation(LocationData oldLocation, LocationData newLocation) async {

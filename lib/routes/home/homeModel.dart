@@ -20,8 +20,12 @@ class HomeModel extends _$HomeModel {
   }
 
   locationClicked(LocationData location) {
-    ref.read(weatherLocationServiceProvider.notifier).selectLocation(location);
-    ref.read(routerProvider).go('/coords?${location.toQueryStr()}');
+    final weatherLocations = ref.read(weatherLocationServiceProvider.notifier);
+    weatherLocations.selectLocation(location);
+    ref
+        .read(routerProvider)
+        .push('/coords?${location.toQueryStr()}')
+        .then((_) => weatherLocations.deselect());
   }
 
   Future refresh() async {
