@@ -1,9 +1,6 @@
 import 'package:bfsweather/data/location/locationData.dart';
 import 'package:bfsweather/data/location/locationRepository.dart';
-import 'package:bfsweather/data/weather/weatherData.dart';
 import 'package:bfsweather/data/weather/weatherRepository.dart';
-import 'package:bfsweather/router.dart';
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -48,8 +45,9 @@ class WeatherLocationService extends _$WeatherLocationService {
       await _replaceLocation(location, location.copyWith(isLoading: true));
       final weatherS = weatherRepository.getFor(location: location);
       var newLocation = location;
-      await for (final weather in weatherS) {
-        newLocation = newLocation.copyWith(weather: weather);
+      await for (final (weather, weatherMeta) in weatherS) {
+        newLocation = newLocation.copyWith(
+            weather: weather, meta: LocationMetaData(weatherMeta: weatherMeta));
         await _replaceLocation(location, newLocation);
       }
       await _replaceLocation(location, newLocation.copyWith(isLoading: false));

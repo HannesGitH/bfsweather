@@ -1,6 +1,7 @@
 // ignore_for_file: invalid_annotation_target
 
 import 'package:bfsweather/data/weather/weatherData.dart';
+import 'package:bfsweather/data/weather/weatherRepository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'locationData.freezed.dart';
@@ -19,7 +20,10 @@ class LocationData with _$LocationData {
     @JsonKey(name: lngKey) required num lng,
     @JsonKey(includeFromJson: false) @Default(false) bool isLoading,
     // @JsonKey(fromJson: WholeWeatherData.fromJson, toJson: WholeWeatherData.toJson)
+    @JsonKey(includeToJson: false, includeFromJson: false)
     WholeWeatherData? weather,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    LocationMetaData? meta,
   }) = _LocationData;
 
   isSameAs(Object other) {
@@ -29,8 +33,7 @@ class LocationData with _$LocationData {
     return false;
   }
 
-  bool isNearEnoughToProbablyBeTheSame(LocationData other,
-      {double tolerance = 0.05}) {
+  bool isApprox(LocationData other, {double tolerance = 0.05}) {
     return (lat - other.lat).abs() < tolerance &&
         (lng - other.lng).abs() < tolerance;
   }
@@ -41,6 +44,17 @@ class LocationData with _$LocationData {
       LocationData(
           lat: double.parse(dict[latKey]), lng: double.parse(dict[lngKey]));
 
+  factory LocationData.fromQueryStr(String query) =>
+      LocationData.fromQueryParams(Map.fromEntries(query.split('&').map((e) =>
+          (([k, v]) =>
+              MapEntry<String, String>(k, v))(e.split('=').toList()))));
+
   factory LocationData.fromJson(Map<String, dynamic> json) =>
       _$LocationDataFromJson(json);
+}
+
+class LocationMetaData {
+  final AdditionalWeatherInfo weatherMeta;
+
+  const LocationMetaData({required this.weatherMeta});
 }

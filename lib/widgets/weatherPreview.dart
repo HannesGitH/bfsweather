@@ -1,6 +1,7 @@
 import 'package:bfsweather/common/extensions/extensions.dart';
 import 'package:bfsweather/data/location/locationData.dart';
 import 'package:bfsweather/data/weather/weatherData.dart';
+import 'package:bfsweather/data/weather/weatherRepository.dart';
 import 'package:bfsweather/widgets/components/weather/humidity.dart';
 import 'package:bfsweather/widgets/components/weather/rain.dart';
 import 'package:bfsweather/widgets/components/weather/temperature.dart';
@@ -53,6 +54,7 @@ class WeatherPreview extends StatelessWidget {
                         final weather => [
                             WeatherInstantPreview(
                               weather.current,
+                              weatherMeta: location.meta?.weatherMeta,
                               today: weather.daily.firstOrNull,
                               omitIcon: true,
                             ),
@@ -126,11 +128,12 @@ class WeatherPreview extends StatelessWidget {
 
 class WeatherInstantPreview extends StatelessWidget {
   const WeatherInstantPreview(this.weather,
-      {super.key, this.omitIcon = false, this.today});
+      {super.key, this.omitIcon = false, this.today, this.weatherMeta});
 
   final WeatherInstantData weather;
   final WeatherInstantData? today;
   final bool omitIcon;
+  final AdditionalWeatherInfo? weatherMeta;
 
   @override
   Widget build(BuildContext context) {
@@ -138,9 +141,20 @@ class WeatherInstantPreview extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          weather.timeStamp.toSmallHRString(),
-          style: Theme.of(context).textTheme.labelSmall,
+        Row(
+          children: [
+            Text(
+              weather.timeStamp.toSmallHRString(),
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
+            if (weatherMeta?.isOfflineData == true) ...[
+              const SizedBox(width: 10),
+              const Icon(
+                Icons.cloud_off_outlined,
+                size: 15,
+              ),
+            ],
+          ],
         ),
         Wrap(
           // crossAxisAlignment: CrossAxisAlignment.center,

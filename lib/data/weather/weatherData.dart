@@ -108,10 +108,11 @@ class WeatherTempUnion with _$WeatherTempUnion {
         instant: (instant) => instant,
       );
 
-  factory WeatherTempUnion.fromJson(dynamic json) => json is num
-      ? WeatherTempUnion.instant(json)
-      : WeatherTempUnion.daily(
-          WeatherDailyTemps.fromJson(json as Map<String, dynamic>));
+  factory WeatherTempUnion.fromJson(dynamic json) => switch (json) {
+        num n || {'instant': num n} => WeatherTempUnion.instant(n),
+        {'daily': dynamic json} || dynamic json => WeatherTempUnion.daily(
+            WeatherDailyTemps.fromJson(json as Map<String, dynamic>)),
+      };
 }
 
 @freezed
@@ -139,10 +140,14 @@ class WeatherTempFeltUnion with _$WeatherTempFeltUnion {
         instantf: (instant) => instant,
       );
 
-  factory WeatherTempFeltUnion.fromJson(dynamic json) => json is num
-      ? WeatherTempFeltUnion.instantf(json)
-      : WeatherTempFeltUnion.dailyf(
-          WeatherDailyFeltTemps.fromJson(json as Map<String, dynamic>));
+  factory WeatherTempFeltUnion.fromJson(dynamic json) => switch (json) {
+        num n ||
+        {'instant': num n} ||
+        {'instantf': num n} =>
+          WeatherTempFeltUnion.instantf(n),
+        {'daily': dynamic json} || dynamic json => WeatherTempFeltUnion.dailyf(
+            WeatherDailyFeltTemps.fromJson(json as Map<String, dynamic>)),
+      };
 }
 
 class TakeFirstWeatherDescriptionConverter
