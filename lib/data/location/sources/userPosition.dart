@@ -14,8 +14,9 @@ class UserPositionSource {
       desiredAccuracy: LocationAccuracy.low,
       timeLimit: const Duration(seconds: 5),
     );
-    return ((LocationData l) =>
-            l.copyWith(name: 'Your location: ${l.name ?? 'Unknown'}'))(
+    return ((LocationData l) => l.copyWith(
+            name:
+                l.name == null ? 'Your Location' : 'Your location: ${l.name}'))(
         await openWGC.tryAddName(LocationData(
       lat: position.latitude,
       lng: position.longitude,
