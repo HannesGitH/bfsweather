@@ -63,6 +63,16 @@
               export ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT}
             '';
           };
+
+          web = pkgs.mkShell rec {
+            name = "web";
+            buildInputs = with pkgs; deps ++ [ google-chrome ];
+            CHROME_EXECUTABLE = "${pkgs.google-chrome}/bin/google-chrome-stable";
+            shellHook = ''
+              export CHROME_EXECUTABLE=${CHROME_EXECUTABLE}
+            '';
+          };
+
           default = apk;
         };
       });
