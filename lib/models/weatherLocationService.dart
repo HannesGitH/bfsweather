@@ -62,8 +62,9 @@ class WeatherLocationService extends _$WeatherLocationService {
     final weatherS = weatherRepository.getFor(location: location);
     var newLocation = location.copyWith(isLoading: true);
     await for (final (weather, weatherMeta) in weatherS) {
-      yield newLocation.copyWith(
+      newLocation = newLocation.copyWith(
           weather: weather, meta: LocationMetaData(weatherMeta: weatherMeta));
+      yield newLocation;
     }
     yield newLocation.copyWith(isLoading: false);
   }

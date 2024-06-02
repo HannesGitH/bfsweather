@@ -18,7 +18,11 @@ class UserPositionSource {
     final position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.low,
       timeLimit: const Duration(seconds: 5),
-    );
+    ).then<Position?>((p) => p, onError: (e) => null);
+
+    if (position == null) {
+      return null;
+    }
 
     final cached = kIsWeb
         ? null

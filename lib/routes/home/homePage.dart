@@ -2,7 +2,6 @@ import 'package:bfsweather/fragments/settingsDrawer.dart';
 import 'package:bfsweather/models/weatherLocationService.dart';
 import 'package:bfsweather/routes/home/homeModel.dart';
 import 'package:bfsweather/widgets/weatherPreview.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
