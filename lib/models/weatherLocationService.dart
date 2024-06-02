@@ -46,6 +46,7 @@ class WeatherLocationService extends _$WeatherLocationService {
   }
 
   deselect() async {
+    await Future.delayed(const Duration(milliseconds: 500));
     state = AsyncData((await future).copyWith(currentLocation: null));
   }
 
@@ -87,5 +88,16 @@ class WeatherLocationService extends _$WeatherLocationService {
     state = AsyncValue.data(newState);
     ref.notifyListeners();
     await _loadWeatherForFavorites();
+  }
+
+  Future refreshCurrent() async {
+    final oldState = await future;
+    if (oldState.currentLocation == null) return;
+    state = AsyncValue.data(oldState.copyWith(
+        currentLocation: oldState.currentLocation!.copyWith(isLoading: true)));
+    await for (final newLocation in loadWeatherFor(oldState.currentLocation!)) {
+      state = AsyncValue.data(oldState.copyWith(
+          currentLocation: newLocation.copyWith(isLoading: false)));
+    }
   }
 }

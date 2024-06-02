@@ -6,9 +6,7 @@ import 'package:bfsweather/widgets/components/weather/humidity.dart';
 import 'package:bfsweather/widgets/components/weather/rain.dart';
 import 'package:bfsweather/widgets/components/weather/temperature.dart';
 import 'package:bfsweather/widgets/components/weather/wind.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class WeatherPreview extends StatelessWidget {
   const WeatherPreview({super.key, required this.location, this.onPressed});
@@ -100,10 +98,13 @@ class WeatherPreview extends StatelessWidget {
     );
   }
 
-  Text title(BuildContext context) {
-    return Text(
-      location.name ?? '${location.lat}, ${location.lng}',
-      style: Theme.of(context).textTheme.headlineSmall,
+  Widget title(BuildContext context) {
+    return Hero(
+      tag: location.hashCode,
+      child: Text(
+        location.name ?? '${location.lat}, ${location.lng}',
+        style: Theme.of(context).textTheme.headlineSmall,
+      ),
     );
   }
 
@@ -211,24 +212,27 @@ class HourlyWeatherPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 120,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: foreCast
-            .map((e) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Temperature(e.temp.temp),
-                      Image(image: e.description.iconProvider),
-                      Text(
-                        e.timeStamp.toSmallHRString(),
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    ],
-                  ),
-                ))
-            .toList(),
+      child: Hero(
+        tag: foreCast,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: foreCast
+              .map((e) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Temperature(e.temp.temp),
+                        Image(image: e.description.iconProvider),
+                        Text(
+                          e.timeStamp.toSmallHRString(),
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                      ],
+                    ),
+                  ))
+              .toList(),
+        ),
       ),
     );
   }
