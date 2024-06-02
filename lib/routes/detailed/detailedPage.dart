@@ -37,10 +37,11 @@ class DetailedPage extends ConsumerWidget {
             children: [
               Text('WIP'),
               WeatherPreview(
-                  location: location,
-                  onPressed: () {
-                    //only needed to not be disabled and allow scrolling hourly data
-                  }),
+                location: location,
+                // onPressed: () {
+                //   //only needed to not be disabled and allow scrolling hourly data
+                // },
+              ),
             ],
           ),
         ));
