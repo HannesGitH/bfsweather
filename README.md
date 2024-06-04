@@ -2,7 +2,17 @@
 
 ## Instructions
 
-generate code with `flutter run build_runner build` (or continuously using `watch` ) and then run or build e.g. using `flutter run`
+### run
+
+- download the latest APK from the releases page
+
+### build
+
+- get your openweather API key and store it as `OPENWEATHER_API_KEY=your_key_here` in a `.env.dev` file in project root
+
+- generate code with `flutter run build_runner build` (or continuously using `watch` )
+
+- and then run or build e.g. using `flutter run`
 
 ## Annotations
 
