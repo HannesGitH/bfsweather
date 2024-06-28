@@ -9,38 +9,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DetailedPage extends ConsumerWidget {
   const DetailedPage({
-    required LocationData location,
     super.key,
-  }) : passedLocation = location;
-
-  final LocationData passedLocation;
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final weatherLocationService =
         ref.read(weatherLocationServiceProvider.notifier);
 
-    final LocationData location =
-        switch (switch (ref.watch(weatherLocationServiceProvider)) {
-      AsyncData(:final value) => switch (value.currentLocation) {
-          null => null,
-          final l => l,
-        },
+    final LocationData? location =
+        (switch (ref.watch(weatherLocationServiceProvider)) {
+      AsyncData(:final value) => value.currentLocation,
       _ => null,
-    }) {
-      null => ((l) {
-          ref.read(weatherLocationServiceProvider.notifier).selectLocation(l);
-          return l;
-        })(passedLocation),
-      final l => l,
-    };
+    });
     return Scaffold(
         appBar: AppBar(
           title: Hero(
               tag: location.hashCode,
               child: Material(
                   textStyle: Theme.of(context).textTheme.headlineSmall,
-                  child: Text(location.name ?? 'Unknown Location ..'))),
+                  child: Text(location?.name ?? 'Unknown Location ..'))),
         ),
         body: Center(
           child: RefreshIndicator(
@@ -57,14 +45,16 @@ class DetailedPage extends ConsumerWidget {
                   const Text('WIP'),
                   HeroMode(
                     enabled: false,
-                    child: WeatherPreview(
-                      location: location,
-                      // onPressed: () {
-                      //   //only needed to not be disabled and allow scrolling hourly data
-                      // },
-                    ),
+                    child: location != null
+                        ? WeatherPreview(
+                            location: location,
+                            // onPressed: () {
+                            //   //only needed to not be disabled and allow scrolling hourly data
+                            // },
+                          )
+                        : const CircularProgressIndicator(),
                   ),
-                  ...switch (location.weather) {
+                  ...switch (location?.weather) {
                     null => [],
                     WholeWeatherData w => [
                         _label("2 Day Hourly Forecast"),
