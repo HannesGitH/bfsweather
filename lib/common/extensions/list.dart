@@ -3,7 +3,7 @@ part of 'extensions.dart';
 extension ThinningExtension on List {
   List<T> thin<T>(int thinning) {
     if (thinning <= 1) {
-      return this.cast<T>();
+      return cast<T>();
     }
     final result = <T>[];
     for (var i = 0; i < length; i += thinning) {

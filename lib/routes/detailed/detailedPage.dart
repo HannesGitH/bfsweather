@@ -5,14 +5,13 @@ import 'package:bfsweather/data/weather/weatherData.dart';
 import 'package:bfsweather/models/weatherLocationService.dart';
 import 'package:bfsweather/widgets/weatherPreview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DetailedPage extends ConsumerWidget {
   const DetailedPage({
     required LocationData location,
     super.key,
-  }) : this.passedLocation = location;
+  }) : passedLocation = location;
 
   final LocationData passedLocation;
 
@@ -55,7 +54,7 @@ class DetailedPage extends ConsumerWidget {
               ),
               child: ListView(
                 children: [
-                  Text('WIP'),
+                  const Text('WIP'),
                   HeroMode(
                     enabled: false,
                     child: WeatherPreview(

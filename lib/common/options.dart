@@ -1,8 +1,8 @@
 /// These would normally be settable by the user in a seTtings view and persisted, but not in an MVP
 class Options {
-  static Options _instance = Options._internal();
+  static final Options _instance = Options._internal();
   factory Options() => _instance;
-  Options._internal() {}
+  Options._internal();
 
   final unit = Unit.metric;
 }
